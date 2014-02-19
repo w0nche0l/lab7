@@ -1,10 +1,12 @@
 var models = require('../models');
 
-exports.projectInfo = function(req, res) { 
+exports.projectInfo = function(req, res) {
   var projectID = req.params.id;
-
+  console.log(projectID);
   // query for the specific project and
   // call the following callback
+
+  var project = models.Project.find({"_id" : projectID}).exec(afterQuery);
 
   function afterQuery(err, projects) {
     if(err) console.log(err);
@@ -18,6 +20,17 @@ exports.addProject = function(req, res) {
 
   // make a new Project and save it to the DB
   // YOU MUST send an OK response w/ res.send();
+  var newModel = new models.Project({
+    "title":form_data.project_title, 
+    "date":form_data.date,
+    "summary":form_data.summary,
+    "image":form_data.image_url
+  });
+  newModel.save(afterQuery);
+  function afterQuery(err, projects) {
+    if(err) console.log(err);
+    res.send();
+  }
 }
 
 exports.deleteProject = function(req, res) {
@@ -25,4 +38,10 @@ exports.deleteProject = function(req, res) {
 
   // find the project and remove it
   // YOU MUST send an OK response w/ res.send();
+  var project = models.Project.find({"_id":projectID}).remove().exec(afterQuery);
+
+  function afterQuery(err, projects) {
+    if(err) console.log(err);
+    res.send();
+  }
 }
